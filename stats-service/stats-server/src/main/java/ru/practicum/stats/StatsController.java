@@ -8,6 +8,8 @@ import ru.practicum.dto.EndpointHit;
 import ru.practicum.dto.ViewStats;
 
 import javax.validation.Valid;
+import java.net.URLDecoder;
+import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,6 +34,9 @@ public class StatsController {
             @RequestParam String end,
             @RequestParam(required = false) List<String> uris,
             @RequestParam(required = false, defaultValue = "false") Boolean unique) {
+
+        start = URLDecoder.decode(start, StandardCharsets.UTF_8);
+        end = URLDecoder.decode(end, StandardCharsets.UTF_8);
 
         return hitService.getStats(
                 LocalDateTime.parse(start, datePattern),

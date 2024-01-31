@@ -22,7 +22,7 @@ public class StatsServiceImpl implements StatsService {
         return null;
     }
 
-    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, java.util.List<String> uris, Boolean unique) {
+    public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
         if (uris == null) {
             return unique ? repository.findWithoutUriUnique(start, end) : repository.findWithoutUriNotUnique(start, end);
         } else {
