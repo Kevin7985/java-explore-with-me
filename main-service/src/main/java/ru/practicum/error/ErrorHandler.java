@@ -17,7 +17,7 @@ import ru.practicum.event.exceptions.EventValidation;
 import ru.practicum.request.exceptions.RequestConflict;
 import ru.practicum.request.exceptions.RequestNotFound;
 import ru.practicum.user.exceptions.UserNotFound;
-import ru.practicum.сategory.exceptions.CategoryNotFound;
+import ru.practicum.category.exceptions.CategoryNotFound;
 
 import javax.validation.ConstraintViolationException;
 import java.net.ConnectException;

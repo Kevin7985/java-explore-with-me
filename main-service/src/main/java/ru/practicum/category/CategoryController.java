@@ -1,11 +1,11 @@
-package ru.practicum.сategory;
+package ru.practicum.category;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
-import ru.practicum.сategory.dto.CategoryDto;
-import ru.practicum.сategory.dto.NewCategoryDto;
+import ru.practicum.category.dto.CategoryDto;
+import ru.practicum.category.dto.NewCategoryDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;

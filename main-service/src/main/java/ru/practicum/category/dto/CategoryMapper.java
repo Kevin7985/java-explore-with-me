@@ -1,7 +1,7 @@
-package ru.practicum.сategory.dto;
+package ru.practicum.category.dto;
 
 import org.springframework.stereotype.Component;
-import ru.practicum.сategory.model.Category;
+import ru.practicum.category.model.Category;
 
 @Component
 public class CategoryMapper {

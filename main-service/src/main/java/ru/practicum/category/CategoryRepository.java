@@ -1,6 +1,6 @@
-package ru.practicum.сategory;
+package ru.practicum.category;
 
 import org.springframework.data.repository.PagingAndSortingRepository;
-import ru.practicum.сategory.model.Category;
+import ru.practicum.category.model.Category;
 
 public interface CategoryRepository extends PagingAndSortingRepository<Category, Long> { }

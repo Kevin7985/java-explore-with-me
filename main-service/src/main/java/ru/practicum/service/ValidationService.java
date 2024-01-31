@@ -13,9 +13,9 @@ import ru.practicum.request.model.Request;
 import ru.practicum.user.UserRepository;
 import ru.practicum.user.exceptions.UserNotFound;
 import ru.practicum.user.model.User;
-import ru.practicum.сategory.CategoryRepository;
-import ru.practicum.сategory.exceptions.CategoryNotFound;
-import ru.practicum.сategory.model.Category;
+import ru.practicum.category.CategoryRepository;
+import ru.practicum.category.exceptions.CategoryNotFound;
+import ru.practicum.category.model.Category;
 
 @Service
 @RequiredArgsConstructor

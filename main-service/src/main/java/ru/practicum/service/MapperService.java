@@ -19,10 +19,10 @@ import ru.practicum.user.dto.UserDto;
 import ru.practicum.user.dto.UserMapper;
 import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.user.model.User;
-import ru.practicum.сategory.dto.CategoryDto;
-import ru.practicum.сategory.dto.CategoryMapper;
-import ru.practicum.сategory.dto.NewCategoryDto;
-import ru.practicum.сategory.model.Category;
+import ru.practicum.category.dto.CategoryDto;
+import ru.practicum.category.dto.CategoryMapper;
+import ru.practicum.category.dto.NewCategoryDto;
+import ru.practicum.category.model.Category;
 
 import java.util.List;
 

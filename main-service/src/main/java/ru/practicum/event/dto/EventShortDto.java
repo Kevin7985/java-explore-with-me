@@ -3,7 +3,7 @@ package ru.practicum.event.dto;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import ru.practicum.user.dto.UserShortDto;
-import ru.practicum.сategory.dto.CategoryDto;
+import ru.practicum.category.dto.CategoryDto;
 
 import java.time.LocalDateTime;
 

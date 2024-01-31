@@ -1,4 +1,4 @@
-package ru.practicum.сategory;
+package ru.practicum.category;
 
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -10,9 +10,9 @@ import org.springframework.stereotype.Service;
 import ru.practicum.service.MapperService;
 import ru.practicum.service.ValidationService;
 import ru.practicum.utils.Pagination;
-import ru.practicum.сategory.dto.CategoryDto;
-import ru.practicum.сategory.dto.NewCategoryDto;
-import ru.practicum.сategory.model.Category;
+import ru.practicum.category.dto.CategoryDto;
+import ru.practicum.category.dto.NewCategoryDto;
+import ru.practicum.category.model.Category;
 
 import java.util.ArrayList;
 import java.util.List;
