@@ -258,13 +258,19 @@ public class EventServiceImpl implements EventService {
             requestRepository.saveAll(toAdd);
 
             return new EventRequestStatusUpdateResult(
-                    requestRepository.findByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED).stream()
+                    confirmedRequests.stream()
                             .map(mapperService::toRequestDto).collect(Collectors.toList()),
                     new ArrayList<>()
             );
         }
 
-        List<Long> foundRequestIds = requestRepository.findByEventIdAndIdIn(eventId, request.getRequestIds()).stream()
+        List<Request> foundRequests = requestRepository.findByEventIdAndIdIn(eventId, request.getRequestIds());
+        HashMap<Long, Request> reqs = new HashMap<>();
+        foundRequests.forEach(item -> {
+            reqs.put(item.getId(), item);
+        });
+
+        List<Long> foundRequestIds = foundRequests.stream()
                 .map(Request::getId)
                 .collect(Collectors.toList());
 
@@ -275,7 +281,7 @@ public class EventServiceImpl implements EventService {
                 throw new RequestNotFound("Заявка с id = " + item + " не найдена");
             }
 
-            Request req = requestRepository.findById(item).get();
+            Request req = reqs.get(item);
             if (req.getStatus().equals(RequestStatus.CANCELED)) {
                 throw new RequestConflict("Принять можно только заявки, которые ожидают решения");
             }
@@ -297,7 +303,7 @@ public class EventServiceImpl implements EventService {
 
         log.info("Обновлены статусы запросов на участие");
         return new EventRequestStatusUpdateResult(
-                requestRepository.findByEventIdAndStatus(eventId, RequestStatus.CONFIRMED).stream()
+                confirmedRequests.stream()
                         .map(mapperService::toRequestDto)
                         .collect(Collectors.toList()),
                 requestRepository.findByEventIdAndStatus(eventId, RequestStatus.REJECTED).stream()
