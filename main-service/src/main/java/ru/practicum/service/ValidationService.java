@@ -2,6 +2,9 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.category.CategoryRepository;
+import ru.practicum.category.exceptions.CategoryNotFound;
+import ru.practicum.category.model.Category;
 import ru.practicum.compilation.CompilationRepository;
 import ru.practicum.compilation.exceptions.CompilationNotFound;
 import ru.practicum.compilation.model.Compilation;
@@ -13,9 +16,6 @@ import ru.practicum.request.model.Request;
 import ru.practicum.user.UserRepository;
 import ru.practicum.user.exceptions.UserNotFound;
 import ru.practicum.user.model.User;
-import ru.practicum.category.CategoryRepository;
-import ru.practicum.category.exceptions.CategoryNotFound;
-import ru.practicum.category.model.Category;
 
 @Service
 @RequiredArgsConstructor

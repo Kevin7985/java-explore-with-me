@@ -2,6 +2,10 @@ package ru.practicum.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import ru.practicum.category.dto.CategoryDto;
+import ru.practicum.category.dto.CategoryMapper;
+import ru.practicum.category.dto.NewCategoryDto;
+import ru.practicum.category.model.Category;
 import ru.practicum.compilation.dto.CompilationDto;
 import ru.practicum.compilation.dto.CompilationMapper;
 import ru.practicum.compilation.dto.NewCompilationDto;
@@ -19,10 +23,6 @@ import ru.practicum.user.dto.UserDto;
 import ru.practicum.user.dto.UserMapper;
 import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.user.model.User;
-import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.category.dto.CategoryMapper;
-import ru.practicum.category.dto.NewCategoryDto;
-import ru.practicum.category.model.Category;
 
 import java.util.List;
 

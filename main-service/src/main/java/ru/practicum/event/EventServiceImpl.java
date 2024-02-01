@@ -12,6 +12,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.StatsClient;
+import ru.practicum.category.model.Category;
 import ru.practicum.dto.ViewStats;
 import ru.practicum.error.exceptions.ServiceConnection;
 import ru.practicum.event.dto.*;
@@ -30,7 +31,6 @@ import ru.practicum.service.MapperService;
 import ru.practicum.service.ValidationService;
 import ru.practicum.user.model.User;
 import ru.practicum.utils.Pagination;
-import ru.practicum.category.model.Category;
 
 import javax.persistence.EntityManager;
 import java.time.LocalDateTime;

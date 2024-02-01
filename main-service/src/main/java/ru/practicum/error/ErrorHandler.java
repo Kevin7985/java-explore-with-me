@@ -7,6 +7,7 @@ import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
+import ru.practicum.category.exceptions.CategoryNotFound;
 import ru.practicum.compilation.exceptions.CompilationNotFound;
 import ru.practicum.compilation.exceptions.CompilationValidation;
 import ru.practicum.error.model.ApiError;
@@ -17,7 +18,6 @@ import ru.practicum.event.exceptions.EventValidation;
 import ru.practicum.request.exceptions.RequestConflict;
 import ru.practicum.request.exceptions.RequestNotFound;
 import ru.practicum.user.exceptions.UserNotFound;
-import ru.practicum.category.exceptions.CategoryNotFound;
 
 import javax.validation.ConstraintViolationException;
 import java.net.ConnectException;

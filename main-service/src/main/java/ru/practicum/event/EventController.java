@@ -14,8 +14,6 @@ import ru.practicum.request.dto.ParticipationRequestDto;
 import javax.servlet.http.HttpServletRequest;
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
-import java.net.URLDecoder;
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -59,7 +57,6 @@ public class EventController {
 
     @PatchMapping("/users/{userId}/events/{eventId}/requests")
     public EventRequestStatusUpdateResult updateRequestsStatus(@PathVariable Long userId, @PathVariable Long eventId, @RequestBody EventRequestStatusUpdateRequest request) {
-        System.out.println(request);
         return eventService.updateRequestsStatus(userId, eventId, request);
     }
 
@@ -98,11 +95,9 @@ public class EventController {
             @RequestParam(defaultValue = "0") @Min(0) Integer from,
             @RequestParam(defaultValue = "10") @Min(1) Integer size
             ) {
-        String url = req.getRequestURI() + "?" + URLDecoder.decode(req.getQueryString(), StandardCharsets.UTF_8);
-
         statsClient.saveEndpoint(new EndpointHit(
                 "ewm-main-service",
-                url,
+                "/events",
                 req.getRemoteAddr(),
                 LocalDateTime.now().format(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss"))));
 

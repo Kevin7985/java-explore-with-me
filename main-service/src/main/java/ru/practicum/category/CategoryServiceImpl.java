@@ -7,12 +7,12 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
-import ru.practicum.service.MapperService;
-import ru.practicum.service.ValidationService;
-import ru.practicum.utils.Pagination;
 import ru.practicum.category.dto.CategoryDto;
 import ru.practicum.category.dto.NewCategoryDto;
 import ru.practicum.category.model.Category;
+import ru.practicum.service.MapperService;
+import ru.practicum.service.ValidationService;
+import ru.practicum.utils.Pagination;
 
 import java.util.ArrayList;
 import java.util.List;

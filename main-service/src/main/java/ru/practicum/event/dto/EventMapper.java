@@ -1,12 +1,12 @@
 package ru.practicum.event.dto;
 
 import org.springframework.stereotype.Component;
+import ru.practicum.category.dto.CategoryDto;
+import ru.practicum.category.model.Category;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
 import ru.practicum.user.dto.UserShortDto;
 import ru.practicum.user.model.User;
-import ru.practicum.category.dto.CategoryDto;
-import ru.practicum.category.model.Category;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

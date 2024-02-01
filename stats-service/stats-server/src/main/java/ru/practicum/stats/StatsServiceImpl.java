@@ -6,6 +6,7 @@ import org.springframework.stereotype.Service;
 import ru.practicum.dto.EndpointHit;
 import ru.practicum.dto.ViewStats;
 import ru.practicum.stats.dto.StatsMapper;
+import ru.practicum.stats.exceptions.ValidationError;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -23,6 +24,10 @@ public class StatsServiceImpl implements StatsService {
     }
 
     public List<ViewStats> getStats(LocalDateTime start, LocalDateTime end, List<String> uris, Boolean unique) {
+        if (start != null && end != null && end.isBefore(start)) {
+            throw new ValidationError("Дата окончания не может быть раньше даты начала");
+        }
+
         if (uris == null) {
             return unique ? repository.findWithoutUriUnique(start, end) : repository.findWithoutUriNotUnique(start, end);
         } else {
