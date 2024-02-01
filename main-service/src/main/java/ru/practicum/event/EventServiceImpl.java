@@ -363,7 +363,7 @@ public class EventServiceImpl implements EventService {
             }
 
             events.addAll(toEventDto(eventsTemp));
-            
+
             events = events.stream().limit(size).collect(Collectors.toList());
         }
 
