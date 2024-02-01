@@ -1,5 +1,7 @@
 package ru.practicum.event;
 
+import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.JPQLQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import lombok.RequiredArgsConstructor;
@@ -307,41 +309,60 @@ public class EventServiceImpl implements EventService {
 
     @Override
     public List<EventFullDto> searchEventsAdmin(List<Long> userIds, List<EventState> states, List<Long> categoryIds, LocalDateTime rangeStart, LocalDateTime rangeEnd, Integer from, Integer size) {
-        QEvent qevent = QEvent.event;
+        QEvent qEvent = QEvent.event;
 
-        JPAQueryFactory queryFactory = new JPAQueryFactory(entityManager);
-
-        JPQLQuery<Event> query = queryFactory.selectFrom(qevent);
+        List<BooleanExpression> params = new ArrayList<>();
 
         if (!userIds.isEmpty()) {
-            query.where(qevent.initiator.id.in(userIds));
+            params.add(qEvent.initiator.id.in(userIds));
         }
+
         if (!states.isEmpty()) {
-            query.where(qevent.state.in(states));
+            params.add(qEvent.state.in(states));
         }
 
         if (!categoryIds.isEmpty()) {
-            query.where(qevent.category.id.in(categoryIds));
+            params.add(qEvent.category.id.in(categoryIds));
         }
 
         if (rangeStart != null) {
-            query.where(qevent.eventDate.after(rangeStart));
+            params.add(qEvent.eventDate.after(rangeStart));
         }
 
         if (rangeEnd != null) {
-            query.where(qevent.eventDate.before(rangeEnd));
+            params.add(qEvent.eventDate.before(rangeEnd));
         }
 
-        if (from != null) {
-            query.offset(from);
-        }
+        BooleanExpression query = Expressions.allOf(params.toArray(new BooleanExpression[params.size()]));
 
-        if (size != null) {
-            query.limit(size);
+        List<EventFullDto> events = new ArrayList<>();
+
+        Pageable pageable;
+        Sort sort = Sort.by(Sort.Direction.ASC, "id");
+        Page<Event> page;
+        Pagination pager = new Pagination(from, size);
+
+        if (size == null) {
+            pageable = PageRequest.of(pager.getPageStart(), pager.getPageSize(), sort);
+            page = eventRepository.findAll(query, pageable);
+
+            while (page.hasContent()) {
+                events.addAll(toEventDto(page.toList()));
+                pageable = pageable.next();
+                page = eventRepository.findAll(query, pageable);
+            }
+        } else {
+            for (int i = pager.getPageStart(); i < pager.getPagesAmount(); i++) {
+                pageable = PageRequest.of(i, pager.getPageSize(), sort);
+                page = eventRepository.findAll(query, pageable);
+                events.addAll(toEventDto(page.toList()));
+            }
+
+            events = events.stream().limit(size).collect(Collectors.toList());
         }
 
         log.info("Поиск событий (админ)");
-        return toEventDto(new ArrayList<>(query.fetch()));
+        return events;
     }
 
     @Override
