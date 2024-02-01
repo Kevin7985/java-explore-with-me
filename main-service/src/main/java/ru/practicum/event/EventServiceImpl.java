@@ -345,19 +345,19 @@ public class EventServiceImpl implements EventService {
 
         if (size == null) {
             pageable = PageRequest.of(pager.getPageStart(), pager.getPageSize(), sort);
-            page = eventRepository.findAll(query, pageable);
+            page = query != null ? eventRepository.findAll(query, pageable) : eventRepository.findAll(pageable);
 
             while (page.hasContent()) {
                 eventsTemp.addAll(page.toList());
                 pageable = pageable.next();
-                page = eventRepository.findAll(query, pageable);
+                page = query != null ? eventRepository.findAll(query, pageable) : eventRepository.findAll(pageable);
             }
 
             events.addAll(toEventDto(eventsTemp));
         } else {
             for (int i = pager.getPageStart(); i < pager.getPagesAmount(); i++) {
                 pageable = PageRequest.of(i, pager.getPageSize(), sort);
-                page = eventRepository.findAll(query, pageable);
+                page = query != null ? eventRepository.findAll(query, pageable) : eventRepository.findAll(pageable);
                 eventsTemp.addAll(page.toList());
             }
 
