@@ -39,7 +39,7 @@ public class StatsController {
         end = URLDecoder.decode(end, StandardCharsets.UTF_8);
 
         return hitService.getStats(
-                start != null ? LocalDateTime.parse(start, datePattern): null,
+                start != null ? LocalDateTime.parse(start, datePattern) : null,
                 end != null ? LocalDateTime.parse(end, datePattern) : null,
                 uris,
                 unique
