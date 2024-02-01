@@ -271,7 +271,6 @@ public class EventServiceImpl implements EventService {
         List<Request> requestsToSave = new ArrayList<>();
 
         request.getRequestIds().forEach(item -> {
-            System.out.println(item);
             if (!foundRequestIds.contains(item)) {
                 throw new RequestNotFound("Заявка с id = " + item + " не найдена");
             }
@@ -362,9 +361,7 @@ public class EventServiceImpl implements EventService {
                 eventsTemp.addAll(page.toList());
             }
 
-            events.addAll(toEventDto(eventsTemp));
-
-            events = events.stream().limit(size).collect(Collectors.toList());
+            events.addAll(toEventDto(eventsTemp.stream().limit(size).collect(Collectors.toList())));
         }
 
         log.info("Поиск событий (админ)");
