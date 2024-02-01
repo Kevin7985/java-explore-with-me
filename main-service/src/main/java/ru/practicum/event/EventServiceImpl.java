@@ -359,7 +359,7 @@ public class EventServiceImpl implements EventService {
                 page = query != null ? eventRepository.findAll(query, pageable) : eventRepository.findAll(pageable);
             }
 
-            events.addAll(toEventDto(eventsTemp));
+            events.addAll(eventsTemp.stream().map(this::toEventDto).collect(Collectors.toList()));
         } else {
             for (int i = pager.getPageStart(); i < pager.getPagesAmount(); i++) {
                 pageable = PageRequest.of(i, pager.getPageSize(), sort);
@@ -367,7 +367,7 @@ public class EventServiceImpl implements EventService {
                 eventsTemp.addAll(page.toList());
             }
 
-            events.addAll(toEventDto(eventsTemp.stream().limit(size).collect(Collectors.toList())));
+            events.addAll(eventsTemp.stream().limit(size).map(this::toEventDto).collect(Collectors.toList()));
         }
 
         log.info("Поиск событий (админ)");
