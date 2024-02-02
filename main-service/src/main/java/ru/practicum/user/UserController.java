@@ -1,0 +1,40 @@
+package ru.practicum.user;
+
+import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
+import org.springframework.web.bind.annotation.*;
+import ru.practicum.user.dto.NewUserRequest;
+import ru.practicum.user.dto.UserDto;
+
+import javax.validation.Valid;
+import javax.validation.constraints.Min;
+import java.util.List;
+
+@RestController
+@Validated
+@RequiredArgsConstructor
+public class UserController {
+    private final UserService userService;
+
+    @PostMapping("/admin/users")
+    @ResponseStatus(HttpStatus.CREATED)
+    public UserDto createUser(@RequestBody @Valid NewUserRequest userRequest) {
+        return userService.createUser(userRequest);
+    }
+
+    @GetMapping("/admin/users")
+    public List<UserDto> findUsers(
+            @RequestParam(required = false, defaultValue = "") List<Long> ids,
+            @RequestParam(required = false, defaultValue = "0") @Min(0) Integer from,
+            @RequestParam(required = false, defaultValue = "10") @Min(1) Integer size
+    ) {
+        return userService.findUsers(ids, from, size);
+    }
+
+    @DeleteMapping("/admin/users/{userId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void deleteUser(@PathVariable Long userId) {
+        userService.deleteUser(userId);
+    }
+}
