@@ -6,6 +6,7 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.user.dto.NewUserRequest;
 import ru.practicum.user.dto.UserDto;
+import ru.practicum.user.dto.UserShortDto;
 
 import javax.validation.Valid;
 import javax.validation.constraints.Min;
@@ -36,5 +37,27 @@ public class UserController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteUser(@PathVariable Long userId) {
         userService.deleteUser(userId);
+    }
+
+    @PostMapping("/users/{fromUserId}/subscribe")
+    @ResponseStatus(HttpStatus.CREATED)
+    public void subscribe(@PathVariable Long fromUserId, @RequestParam(required = true) Long toUserId) {
+        userService.subscribe(fromUserId, toUserId);
+    }
+
+    @DeleteMapping("/users/{fromUserId}/subscribe")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void unsubscribe(@PathVariable Long fromUserId, @RequestParam(required = true) Long toUserId) {
+        userService.unsubscribe(fromUserId, toUserId);
+    }
+
+    @GetMapping("/users/{id}/subscribers")
+    public List<UserShortDto> getUserSubscribers(@PathVariable Long id) {
+        return userService.getUserSubscribers(id);
+    }
+
+    @GetMapping("/users/{id}/subscriptions")
+    public List<UserShortDto> getUserSubscriptions(@PathVariable Long id) {
+        return userService.getUserSubscriptions(id);
     }
 }

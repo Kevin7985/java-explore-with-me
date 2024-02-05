@@ -4,12 +4,16 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventState;
+import ru.practicum.feed.FeedRepository;
+import ru.practicum.feed.model.Feed;
+import ru.practicum.feed.model.FeedType;
 import ru.practicum.request.dto.ParticipationRequestDto;
 import ru.practicum.request.exceptions.RequestConflict;
 import ru.practicum.request.model.Request;
 import ru.practicum.request.model.RequestStatus;
 import ru.practicum.service.MapperService;
 import ru.practicum.service.ValidationService;
+import ru.practicum.user.model.User;
 
 import java.time.LocalDateTime;
 import java.util.List;
@@ -22,6 +26,7 @@ public class RequestServiceImpl implements RequestService {
     private final MapperService mapperService;
     private final ValidationService validationService;
     private final RequestRepository requestRepository;
+    private final FeedRepository feedRepository;
 
     @Override
     public List<ParticipationRequestDto> getRequests(Long userId) {
@@ -35,7 +40,7 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public ParticipationRequestDto createRequest(Long userId, Long eventId) {
-        validationService.validateUser(userId);
+        User user = validationService.validateUser(userId);
         Event event = validationService.validateEvent(eventId);
 
         Optional<Request> found = requestRepository.findByRequesterIdAndEventId(userId, eventId);
@@ -64,6 +69,16 @@ public class RequestServiceImpl implements RequestService {
                 LocalDateTime.now()
         );
 
+        if (request.getStatus().equals(RequestStatus.CONFIRMED)) {
+            feedRepository.save(new Feed(
+                    null,
+                    user,
+                    FeedType.PARTICIPATE,
+                    eventId,
+                    LocalDateTime.now()
+            ));
+        }
+
         return mapperService.toRequestDto(requestRepository.save(request));
     }
 
@@ -73,6 +88,15 @@ public class RequestServiceImpl implements RequestService {
         Request request = validationService.validateRequest(requestId);
 
         request.setStatus(RequestStatus.CANCELED);
+
+        Optional<Feed> foundFeed = feedRepository.findByUser_IdAndFeedTypeAndEntityId(
+                userId,
+                FeedType.PARTICIPATE,
+                request.getEventId()
+        );
+
+        foundFeed.ifPresent(feed -> feedRepository.deleteById(feed.getId()));
+
         return mapperService.toRequestDto(requestRepository.save(request));
     }
 }

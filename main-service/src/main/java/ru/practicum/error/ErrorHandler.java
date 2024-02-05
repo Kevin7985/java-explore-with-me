@@ -17,6 +17,9 @@ import ru.practicum.event.exceptions.EventNotFound;
 import ru.practicum.event.exceptions.EventValidation;
 import ru.practicum.request.exceptions.RequestConflict;
 import ru.practicum.request.exceptions.RequestNotFound;
+import ru.practicum.user.exceptions.SubscriptionAlreadyExists;
+import ru.practicum.user.exceptions.SubscriptionConflict;
+import ru.practicum.user.exceptions.SubscriptionNotFound;
 import ru.practicum.user.exceptions.UserNotFound;
 
 import javax.validation.ConstraintViolationException;
@@ -58,7 +61,8 @@ public class ErrorHandler {
             CategoryNotFound.class,
             EventNotFound.class,
             RequestNotFound.class,
-            CompilationNotFound.class
+            CompilationNotFound.class,
+            SubscriptionNotFound.class
     })
     @ResponseStatus(HttpStatus.NOT_FOUND)
     public ApiError entityNotFoundHandler(final RuntimeException e) {
@@ -83,7 +87,9 @@ public class ErrorHandler {
 
     @ExceptionHandler({
             RequestConflict.class,
-            EventConditions.class
+            EventConditions.class,
+            SubscriptionAlreadyExists.class,
+            SubscriptionConflict.class
     })
     @ResponseStatus(HttpStatus.CONFLICT)
     public ApiError requestCreateHandler(final Exception e) {

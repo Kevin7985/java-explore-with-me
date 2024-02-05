@@ -15,6 +15,9 @@ import ru.practicum.event.dto.EventMapper;
 import ru.practicum.event.dto.EventShortDto;
 import ru.practicum.event.dto.NewEventDto;
 import ru.practicum.event.model.Event;
+import ru.practicum.feed.dto.FeedDto;
+import ru.practicum.feed.dto.FeedMapper;
+import ru.practicum.feed.model.Feed;
 import ru.practicum.request.dto.ParticipationRequestDto;
 import ru.practicum.request.dto.RequestMapper;
 import ru.practicum.request.model.Request;
@@ -34,6 +37,7 @@ public class MapperService {
     private final EventMapper eventMapper;
     private final RequestMapper requestMapper;
     private final CompilationMapper compilationMapper;
+    private final FeedMapper feedMapper;
 
     public User toUser(NewUserRequest userRequest) {
         return userMapper.toUser(userRequest);
@@ -89,5 +93,9 @@ public class MapperService {
 
     public CompilationDto toCompilationDto(Compilation compilation, List<EventShortDto> events) {
         return compilationMapper.toCompilationDto(compilation, events);
+    }
+
+    public FeedDto toFeedDto(Feed feed, UserDto userDto, Object entity) {
+        return feedMapper.toFeedDto(feed, userDto, entity);
     }
 }
