@@ -37,7 +37,12 @@ public class UpdateEventAdminRequest {
         this.categoryId = category;
         this.eventDate = eventDate;
         this.paid = paid;
+
+        if (participantLimit != null && participantLimit < 0) {
+            throw new EventValidation("participationLimit должен быть не менее 0");
+        }
         this.participantLimit = participantLimit;
+
         this.requestModeration = requestModeration;
         this.location = location;
         this.stateAction = stateAction;

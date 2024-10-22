@@ -21,6 +21,9 @@ import ru.practicum.event.exceptions.EventConditions;
 import ru.practicum.event.exceptions.EventNotFound;
 import ru.practicum.event.exceptions.EventValidation;
 import ru.practicum.event.model.*;
+import ru.practicum.feed.FeedRepository;
+import ru.practicum.feed.model.Feed;
+import ru.practicum.feed.model.FeedType;
 import ru.practicum.request.RequestRepository;
 import ru.practicum.request.dto.ParticipationRequestDto;
 import ru.practicum.request.exceptions.RequestConflict;
@@ -29,6 +32,7 @@ import ru.practicum.request.model.Request;
 import ru.practicum.request.model.RequestStatus;
 import ru.practicum.service.MapperService;
 import ru.practicum.service.ValidationService;
+import ru.practicum.user.UserRepository;
 import ru.practicum.user.model.User;
 import ru.practicum.utils.Pagination;
 
@@ -49,6 +53,8 @@ public class EventServiceImpl implements EventService {
     private final ValidationService validationService;
     private final EventRepository eventRepository;
     private final RequestRepository requestRepository;
+    private final UserRepository userRepository;
+    private final FeedRepository feedRepository;
 
     private final StatsClient statsClient;
 
@@ -203,6 +209,16 @@ public class EventServiceImpl implements EventService {
             }
         }
 
+        if (eventDto.getStateAction() != null && event.getState().equals(EventState.PUBLISHED)) {
+            feedRepository.save(new Feed(
+                    null,
+                    event.getInitiator(),
+                    FeedType.CREATE_NEW_EVENT,
+                    eventId,
+                    LocalDateTime.now()
+            ));
+        }
+
         log.info("Обновлено событие (админ): " + event);
         return toEventDto(eventRepository.save(event));
     }
@@ -244,10 +260,13 @@ public class EventServiceImpl implements EventService {
             List<Request> requestsPending = requestRepository.findByEventIdAndStatus(event.getId(), RequestStatus.PENDING);
 
             List<Request> toAdd = new ArrayList<>();
+            List<Long> confirmedUserIds = new ArrayList<>();
             requestsPending.forEach(item -> {
                 if (event.getParticipantLimit() == 0 || confirmedRequests.size() < event.getParticipantLimit()) {
                     item.setStatus(RequestStatus.CONFIRMED);
                     confirmedRequests.add(item);
+
+                    confirmedUserIds.add(item.getRequesterId());
                 } else {
                     item.setStatus(RequestStatus.REJECTED);
                 }
@@ -256,6 +275,18 @@ public class EventServiceImpl implements EventService {
             });
 
             requestRepository.saveAll(toAdd);
+
+            List<User> users = userRepository.findByIdIn(confirmedUserIds);
+            List<Feed> feedList = new ArrayList<>();
+            users.forEach(item -> feedList.add(new Feed(
+                    null,
+                    item,
+                    FeedType.PARTICIPATE,
+                    eventId,
+                    LocalDateTime.now()
+            )));
+
+            feedRepository.saveAll(feedList);
 
             return new EventRequestStatusUpdateResult(
                     confirmedRequests.stream()
@@ -275,6 +306,7 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
 
         List<Request> requestsToSave = new ArrayList<>();
+        List<Long> confirmedUserIds = new ArrayList<>();
 
         request.getRequestIds().forEach(item -> {
             if (!foundRequestIds.contains(item)) {
@@ -293,6 +325,7 @@ public class EventServiceImpl implements EventService {
                     req.setStatus(RequestStatus.REJECTED);
                 } else {
                     confirmedRequests.add(req);
+                    confirmedUserIds.add(req.getRequesterId());
                 }
             }
 
@@ -300,6 +333,18 @@ public class EventServiceImpl implements EventService {
         });
 
         requestRepository.saveAll(requestsToSave);
+
+        List<User> users = userRepository.findByIdIn(confirmedUserIds);
+        List<Feed> feedList = new ArrayList<>();
+        users.forEach(item -> feedList.add(new Feed(
+                null,
+                item,
+                FeedType.PARTICIPATE,
+                eventId,
+                LocalDateTime.now()
+        )));
+
+        feedRepository.saveAll(feedList);
 
         log.info("Обновлены статусы запросов на участие");
         return new EventRequestStatusUpdateResult(
@@ -471,18 +516,7 @@ public class EventServiceImpl implements EventService {
         event.setLongitude(updateEvent.getLocation() == null ? event.getLongitude() : updateEvent.getLocation().getLon());
     }
 
-    private EventFullDto toEventDto(Event event) {
-        List<Request> requests = requestRepository.findByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED);
-
-        List<ViewStats> stats = statsClient.getStats(LocalDateTime.of(2024, 1, 1, 0, 0, 0), LocalDateTime.now(), List.of("/events/" + event.getId()), true);
-        if (stats == null) {
-            throw new ServiceConnection("Возвращён пустой ответ сервера статистики");
-        }
-
-        return mapperService.toEventDto(event, requests.size(), stats.isEmpty() ? 0 : stats.get(0).getHits());
-    }
-
-    private List<EventFullDto> toEventDto(List<Event> events) {
+    public List<EventFullDto> toEventDto(List<Event> events) {
         List<Long> eventIds = events.stream().map(Event::getId).collect(Collectors.toList());
 
         List<Request> requests = requestRepository.findByEventIdInAndStatus(eventIds, RequestStatus.CONFIRMED);
@@ -515,5 +549,16 @@ public class EventServiceImpl implements EventService {
                 .collect(Collectors.toList());
 
         return eventsDto;
+    }
+
+    private EventFullDto toEventDto(Event event) {
+        List<Request> requests = requestRepository.findByEventIdAndStatus(event.getId(), RequestStatus.CONFIRMED);
+
+        List<ViewStats> stats = statsClient.getStats(LocalDateTime.of(2024, 1, 1, 0, 0, 0), LocalDateTime.now(), List.of("/events/" + event.getId()), true);
+        if (stats == null) {
+            throw new ServiceConnection("Возвращён пустой ответ сервера статистики");
+        }
+
+        return mapperService.toEventDto(event, requests.size(), stats.isEmpty() ? 0 : stats.get(0).getHits());
     }
 }

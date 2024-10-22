@@ -1,6 +1,7 @@
 package ru.practicum.event;
 
 import ru.practicum.event.dto.*;
+import ru.practicum.event.model.Event;
 import ru.practicum.event.model.EventSort;
 import ru.practicum.event.model.EventState;
 import ru.practicum.request.dto.ParticipationRequestDto;
@@ -44,4 +45,6 @@ public interface EventService {
             Integer size);
 
     EventFullDto getEventById(Long id);
+
+    List<EventFullDto> toEventDto(List<Event> events);
 }
